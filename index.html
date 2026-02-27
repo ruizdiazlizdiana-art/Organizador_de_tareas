@@ -153,15 +153,56 @@
             });
         }
 
-        function programarRapido() {
-            const tarea = document.getElementById('nueva-tarea').value;
-            if(!tarea) { alert('Primero escribí una tarea, reina.'); return; }
-            alert('Lógica de programación en construcción... (Paso 2)');
-            // Acá conectaremos con el Service Worker
+       function programarRapido() {
+            const tareaInput = document.getElementById('nueva-tarea');
+            const tarea = tareaInput.value;
+            
+            if(!tarea) { 
+                alert('Primero escribí una tarea.'); 
+                return; 
+            }
+
+            // Para probar que funciona AHORA MISMO, le vamos a dar 5 segundos en vez de 15 minutos.
+            // (15 minutos serían 900000 milisegundos. 5 segundos son 5000 milisegundos).
+            const tiempoEnMilisegundos = 5000; 
+
+            // Verificamos si el Service Worker está listo y le mandamos el mensaje
+            if (navigator.serviceWorker.controller) {
+                navigator.serviceWorker.controller.postMessage({
+                    type: 'PROGRAMAR_TAREA',
+                    titulo: tarea,
+                    delayMs: tiempoEnMilisegundos
+                });
+
+                // Limpiamos el input y avisamos
+                tareaInput.value = '';
+                alert('¡Programado! Salí de la app y esperá 5 segundos para ver la magia.');
+            } else {
+                alert('El sistema de fondo todavía se está cargando, recargá la página.');
+            }
         }
 
-        function abrirCalendario() {
-            alert('Abriendo selector nativo... (Paso 2)');
+        // Acá escuchamos si tocaste "Completar" o "Posponer" desde la barra de notificaciones
+        navigator.serviceWorker.addEventListener('message', (event) => {
+            const lista = document.getElementById('lista-tareas');
+            
+            if (event.data.type === 'TAREA_COMPLETADA') {
+                lista.innerHTML += `
+                    <div class="tarea-item" style="border-left-color: #00E676; opacity: 0.7;">
+                        <span style="text-decoration: line-through;">${event.data.titulo}</span>
+                        <span style="color: var(--gris); font-size: 0.8rem;">✅ Lista</span>
+                    </div>
+                `;
+            }
+            if (event.data.type === 'TAREA_POSPUESTA') {
+                lista.innerHTML += `
+                    <div class="tarea-item" style="border-left-color: #FFD500;">
+                        <span>${event.data.titulo}</span>
+                        <span style="color: var(--gris); font-size: 0.8rem;">⏰ Pospuesta</span>
+                    </div>
+                `;
+            }
+        });
         }
     </script>
 
