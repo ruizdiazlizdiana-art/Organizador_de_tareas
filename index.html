@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Liz Tasks</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#121212">
+    <style>
+        :root {
+            --fondo: #121212;
+            --tarjeta: #1e1e1e;
+            --texto: #ffffff;
+            --acento: #00e5ff; /* Cian para darle un toque tecnológico */
+            --gris: #888888;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--fondo);
+            color: var(--texto);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            box-sizing: border-box;
+        }
+
+        header { padding-bottom: 20px; border-bottom: 1px solid #333; margin-bottom: 20px; }
+        h1 { margin: 0; font-size: 1.5rem; letter-spacing: 1px; }
+        p.subtitulo { margin: 5px 0 0 0; color: var(--gris); font-size: 0.9rem; }
+
+        .input-tarea {
+            background-color: var(--tarjeta);
+            border: 2px solid #333;
+            color: var(--texto);
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            width: 100%;
+            box-sizing: border-box;
+            margin-bottom: 20px;
+        }
+        .input-tarea:focus { outline: none; border-color: var(--acento); }
+
+        .seccion-botones {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        button {
+            background-color: var(--tarjeta);
+            color: var(--texto);
+            border: 1px solid #333;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            transition: 0.2s;
+        }
+
+        button:active { background-color: #333; transform: scale(0.98); }
+        button .icono { font-size: 1.5rem; color: var(--acento); }
+
+        .btn-principal { background-color: rgba(0, 229, 255, 0.1); border-color: var(--acento); }
+
+        .historial { flex: 1; overflow-y: auto; }
+        .historial h2 { font-size: 1.1rem; border-bottom: 1px solid #333; padding-bottom: 10px; color: var(--gris); }
+
+        .tarea-item {
+            background-color: var(--tarjeta);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 3px solid var(--acento);
+        }
+
+        /* Botón para activar notificaciones por primera vez */
+        #btn-permisos {
+            background-color: var(--acento);
+            color: #000;
+            width: 100%;
+            margin-bottom: 20px;
+            display: none; /* Se oculta si ya dio permiso */
+        }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>⚡ Tareas Pendientes</h1>
+        <p class="subtitulo">Organizador silencioso</p>
+    </header>
+
+    <button id="btn-permisos" onclick="pedirPermisoNotificaciones()">Activar Notificaciones</button>
+
+    <input type="text" id="nueva-tarea" class="input-tarea" placeholder="¿Qué hay que hacer, Liz?">
+
+    <div class="seccion-botones">
+        <button class="btn-principal" onclick="programarRapido()">
+            <span class="icono">⏱️</span>
+            En 15 Minutos
+        </button>
+        <button onclick="abrirCalendario()">
+            <span class="icono">📅</span>
+            Elegir Hora
+        </button>
+    </div>
+
+    <div class="historial">
+        <h2>Registro de Hoy</h2>
+        <div id="lista-tareas">
+            <div class="tarea-item">
+                <span>Llamar al corralón</span>
+                <span style="color: var(--gris); font-size: 0.8rem;">Programado 14:30</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Verificamos si el navegador soporta Service Workers y Notificaciones
+        if ('serviceWorker' in navigator && 'Notification' in window) {
+            
+            // Verificamos el estado del permiso
+            if (Notification.permission !== 'granted') {
+                document.getElementById('btn-permisos').style.display = 'block';
+            }
+
+            // Registramos el "Cerebro en segundo plano" (Lo crearemos en el próximo paso)
+            navigator.serviceWorker.register('sw.js')
+            .then(reg => console.log('Service Worker registrado', reg))
+            .catch(err => console.error('Error en Service Worker', err));
+        }
+
+        function pedirPermisoNotificaciones() {
+            Notification.requestPermission().then(permission => {
+                if (permission === 'granted') {
+                    document.getElementById('btn-permisos').style.display = 'none';
+                    alert('¡Permiso concedido! Ahora la app puede avisarte en silencio.');
+                }
+            });
+        }
+
+        function programarRapido() {
+            const tarea = document.getElementById('nueva-tarea').value;
+            if(!tarea) { alert('Primero escribí una tarea, reina.'); return; }
+            alert('Lógica de programación en construcción... (Paso 2)');
+            // Acá conectaremos con el Service Worker
+        }
+
+        function abrirCalendario() {
+            alert('Abriendo selector nativo... (Paso 2)');
+        }
+    </script>
+
+</body>
+</html>
