@@ -1,0 +1,16 @@
+{
+  "name": "Liz Tasks - Organizador",
+  "short_name": "Liz Tasks",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#121212",
+  "theme_color": "#00e5ff",
+  "description": "Gestor de tareas con notificaciones silenciosas.",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/2082/2082875.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
